@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NES Emulator</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- Removed style.css link as per request to use standard colors -->
+</head>
+<body class="w3-light-grey">
+
+    <!-- Top Container: Controls -->
+    <div id="top-tier" class="w3-container w3-padding w3-center">
+        <h2>NES Emulator Controls</h2>
+        <div class="w3-bar">
+            <button id="power-button" class="w3-button w3-round-large w3-red w3-hover-grey w3-margin">Power</button>
+            <button id="reset-button" class="w3-button w3-round-large w3-green w3-hover-grey w3-margin">Reset</button>
+            <input type="file" id="rom-input" accept=".nes" class="w3-button w3-round-large w3-blue-grey w3-hover-grey w3-margin">
+        </div>
+    </div>
+
+    <!-- Middle Container: DSK, Screen, and PPU -->
+    <div id="mid-tier" class="w3-container w3-padding">
+        <div class="w3-row-padding">
+            <!-- Left Panel: NES DSK -->
+            <div class="w3-col m4">
+                <div id="nes-dsk-container" class="w3-card w3-container w3-white w3-padding-16 w3-round-large" style="min-height: 400px;">
+                    <h3>NES DSK</h3>
+                    <p>Disk (ROM) information will be displayed here.</p>
+                </div>
+            </div>
+
+            <!-- Center Panel: NES Screen -->
+            <div class="w3-col m4">
+                <div id="nes-screen-container" class="w3-card w3-container w3-white w3-padding-16 w3-center w3-round-large" style="min-height: 400px;">
+                    <h3>NES Screen</h3>
+                    <canvas id="screen" width="256" height="240" class="w3-border w3-black"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Panel: NES PPU -->
+            <div class="w3-col m4">
+                <div id="nes-ppu-container" class="w3-card w3-container w3-white w3-padding-16 w3-round-large" style="min-height: 400px;">
+                    <h3>NES PPU</h3>
+                    <p>PPU and VRAM data will be displayed here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Container: NES CPU -->
+    <div id="low-tier" class="w3-container w3-padding">
+        <div class="w3-card w3-container w3-white w3-padding-16 w3-round-large">
+            <h3>NES CPU</h3>
+            <p>CPU register and flag information will be shown here.</p>
+        </div>
+    </div>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

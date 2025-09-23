@@ -1,0 +1,24 @@
+{
+  "name": "retro-game-emulator",
+  "version": "1.0.0",
+  "description": "Emulators:  * [NES](./NES/README.md)",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -c-1 .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akashatek/Retro-Game-Emulator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akashatek/Retro-Game-Emulator/issues"
+  },
+  "homepage": "https://github.com/akashatek/Retro-Game-Emulator#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
