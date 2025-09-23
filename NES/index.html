@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NES Emulator</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <!-- Removed style.css link as per request to use standard colors -->
 </head>
 <body class="w3-light-grey">
 
@@ -29,7 +28,21 @@
             <div class="w3-col m4">
                 <div id="nes-dsk-container" class="w3-card w3-container w3-white w3-padding-16 w3-round-large" style="min-height: 400px;">
                     <h3>NES DSK</h3>
-                    <p>Disk (ROM) information will be displayed here.</p>
+                    <div id="nes-dsk-parameters">
+                        <p><b>Mapper:</b> <span id="mapper-number">N/A</span></p>
+                        <p><b>PRG ROM:</b> <span id="prg-rom-count">N/A</span> banks (<span id="prg-rom-size">N/A</span>)</p>
+                        <p><b>CHR ROM:</b> <span id="chr-rom-count">N/A</span> banks (<span id="chr-rom-size">N/A</span>)</p>
+                    </div>
+                    <div id="nes-dsk-pattern-table" class="w3-row w3-center">
+                        <div class="w3-half">
+                            <h4>Pattern Table 0</h4>
+                            <canvas id="pattern-table1-canvas" width="128" height="128" class="w3-border w3-black"></canvas>
+                        </div>
+                        <div class="w3-half">
+                            <h4>Pattern Table 1</h4>
+                            <canvas id="pattern-table2-canvas" width="128" height="128" class="w3-border w3-black"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -53,9 +66,9 @@
 
     <!-- Bottom Container: NES CPU -->
     <div id="low-tier" class="w3-container w3-padding">
-        <div class="w3-card w3-container w3-white w3-padding-16 w3-round-large">
+        <div class="w3-card w3-container w3-white w3-padding-16 w3-round-large" style="min-height: 400px;">
             <h3>NES CPU</h3>
-            <p>CPU register and flag information will be shown here.</p>
+            <p>CPU registers and memory data will be displayed here.</p>
         </div>
     </div>
 

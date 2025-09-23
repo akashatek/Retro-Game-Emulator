@@ -4,7 +4,7 @@ window.onload = () => {
     // Get UI elements
     const powerButton = document.getElementById('power-button');
     const resetButton = document.getElementById('reset-button');
-    const romFileSelector = document.getElementById('rom-input'); // Corrected ID
+    const romFile = document.getElementById('rom-input');
 
     let selectedFile = null;
     const nesEmu = new NESEMU();
@@ -31,7 +31,7 @@ window.onload = () => {
         }, 100);
     });
 
-    romFileSelector.addEventListener('change', (e) => {
+    romFile.addEventListener('change', (e) => {
         selectedFile = e.target.files[0];
         console.log(`ROM file selected: ${selectedFile.name}`);
     });
