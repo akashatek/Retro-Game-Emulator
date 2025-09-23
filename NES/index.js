@@ -15,7 +15,12 @@ window.onload = () => {
         if (selectedFile) {
             const isPoweredOn = e.target.classList.toggle('w3-green');
             e.target.classList.toggle('w3-red');
-            nesEmu.power(isPoweredOn, selectedFile);
+
+            if (isPoweredOn) {
+                nesEmu.powerOn(selectedFile);
+            } else {
+                nesEmu.powerOff();
+            }
         } else {
             console.log("Please select a ROM file first.");
         }

@@ -44,17 +44,21 @@ export default class NESCPU {
     }
 
     /**
+     * Simulates one CPU clock tick.
+     */
+    tick() {
+        // For now, this is a placeholder. A real tick would
+        // fetch an instruction and execute it.
+        this.readPC();
+    }
+
+    /**
      * Reads a byte from the bus using the CPU's program counter.
      * @returns {number} The 8-bit value read from memory.
      */
     readPC() {
-        // TODO: Implement reading from memory at the PC's address.
-    }
-
-    /**
-     * Executes the next instruction in the program.
-     */
-    execute() {
-        // TODO: Implement the main execution loop for fetching and decoding opcodes.
+        const value = this.nesBus.cpuRead(this.PC);
+        this.PC++;
+        return value;
     }
 }

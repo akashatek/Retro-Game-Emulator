@@ -20,4 +20,11 @@ export default class NESPPU {
 
         console.log("NESPPU initialized.");
     }
+
+    /**
+     * Simulates one PPU clock tick.
+     */
+    tick() {
+        // PPU clock logic goes here.
+    }
 }

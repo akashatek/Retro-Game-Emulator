@@ -2,9 +2,10 @@
 // It handles memory reads and writes, directing them to the appropriate hardware.
 
 export default class NESBUS {
-    constructor(nesMem) {
-        // NESBUS takes the NESMEM instance as a dependency to access memory directly.
+    constructor(nesMem, nesCpu, nesPpu) {
         this.nesMem = nesMem;
+        this.nesCpu = nesCpu;
+        this.nesPpu = nesPpu;
         console.log("NESBUS initialized.");
     }
 
@@ -28,5 +29,16 @@ export default class NESBUS {
         // For now, simply write directly to memory.
         // TODO: Implement logic to route writes to PPU registers, APU, and controller inputs.
         this.nesMem.write(address, value);
+    }
+
+    /**
+     * Executes one CPU cycle and the corresponding PPU cycles.
+     */
+    step() {
+        // The PPU runs at 3 times the CPU clock speed
+        this.nesPpu.tick();
+        this.nesPpu.tick();
+        this.nesPpu.tick();
+        this.nesCpu.tick();
     }
 }
