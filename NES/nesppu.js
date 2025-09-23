@@ -1,54 +1,23 @@
-import { NESMEM } from './nesmem.js';
+import NESMEM from './nesmem.js';
+import NESBUS from './nesbus.js';
+import NESDSK from './nesdsk.js';
+import NESCPU from './nescpu.js';
 
-export class NESPPU {
-    constructor() {
-        this.bus = null;
-        this.vram = new NESMEM(0x0800); // 2KB of VRAM.
+export default class NESPPU {
+    constructor(nesBus, display) {
+        this.nesBus = nesBus;
+        this.display = display;
+
         // PPU Registers
-        this.status = 0;
-        this.ctrl = 0;
-        this.mask = 0;
-        // PPU internal memory structures
-        this.nametables = new NESMEM(0x0800);
-        this.palettes = new NESMEM(0x0020);
-        this.oam = new NESMEM(0x0100);
-    }
+        this.CTRL = 0x00;
+        this.MASK = 0x00;
+        this.STATUS = 0x00;
+        this.OAMADDR = 0x00;
+        this.OAMDATA = 0x00;
+        this.SCROLL = 0x00;
+        this.ADDR = 0x00;
+        this.DATA = 0x00;
 
-    /**
-     * Connects the PPU to the PPU bus.
-     * @param {PPUBUS} bus
-     */
-    connectBus(bus) {
-        this.bus = bus;
-    }
-
-    /**
-     * Reads a byte from a PPU register.
-     * @param {number} address
-     * @returns {number} The value read from the register.
-     */
-    readRegister(address) {
-        // TODO: Implement PPU register read logic.
-        return 0;
-    }
-
-    /**
-     * Writes a byte to a PPU register.
-     * @param {number} address
-     * @param {number} value
-     */
-    writeRegister(address, value) {
-        // TODO: Implement PPU register write logic.
-    }
-
-    /**
-     * Renders a single frame to the canvas.
-     * @param {CanvasRenderingContext2D} ctx
-     */
-    renderFrame(ctx) {
-        // TODO: Implement PPU rendering logic.
-        ctx.fillStyle = '#111';
-        ctx.fillRect(0, 0, 256, 240);
-        console.log('PPU is rendering a frame.');
+        console.log("NESPPU initialized.");
     }
 }

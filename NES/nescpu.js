@@ -1,41 +1,60 @@
-import { NESMEM } from './nesmem.js';
+// NESCPU class: Manages the 6502 processor state and execution.
+// It contains all the registers and logic for fetching, decoding, and executing opcodes.
 
-export class NESCPU {
-    constructor() {
-        this.bus = null;
-        this.mem = new NESMEM(0x0800); // 2KB of CPU WRAM.
+export default class NESCPU {
+    constructor(nesBus) {
+        // The CPU needs access to the bus to read and write to memory.
+        this.nesBus = nesBus;
         
-        // 6502 registers
-        this.A = 0;
-        this.X = 0;
-        this.Y = 0;
-        this.PC = 0;
-        this.SP = 0;
-        this.flags = { N: 0, V: 0, B: 0, D: 0, I: 0, Z: 0, C: 0 };
+        // 6502 Registers
+        this.PC = 0x0000; // Program Counter (16-bit)
+        this.SP = 0xFD;    // Stack Pointer (8-bit)
+        this.A  = 0x00;    // Accumulator (8-bit)
+        this.X  = 0x00;    // Index Register X (8-bit)
+        this.Y  = 0x00;    // Index Register Y (8-bit)
+
+        // 6502 Flags (Status Register)
+        // N - Negative
+        // V - Overflow
+        // - - ignored
+        // B - Break
+        // D - Decimal
+        // I - Interrupt
+        // Z - Zero
+        // C - Carry
+        this.status = {
+            N: false,
+            V: false,
+            B: false,
+            D: false,
+            I: false,
+            Z: false,
+            C: false,
+        };
+
+        console.log("NESCPU initialized.");
     }
 
     /**
-     * Connects the CPU to the main bus.
-     * @param {CPUBUS} bus
-     */
-    connectBus(bus) {
-        this.bus = bus;
-    }
-
-    /**
-     * Resets the CPU to its initial power-on state.
+     * Resets the CPU to its initial state.
      */
     reset() {
-        // TODO: Implement a proper reset sequence and set PC from the reset vector.
-        console.log("CPU Reset called.");
-        this.PC = 0xC000; // Placeholder for now.
+        console.log("NESCPU is resetting.");
+        // TODO: Implement reset logic, including setting initial register values and flags.
     }
 
     /**
-     * Fetches, decodes, and executes one instruction.
+     * Reads a byte from the bus using the CPU's program counter.
+     * @returns {number} The 8-bit value read from memory.
      */
-    emulateCycle() {
-        // TODO: Implement fetch, decode, and execute logic for one instruction.
-        console.log(`CPU is at PC: $${this.PC.toString(16).padStart(4, '0')}`);
+    readPC() {
+        // TODO: Implement reading from memory at the PC's address.
+    }
+
+    /**
+     * Executes the next instruction in the program.
+     */
+    execute() {
+        // TODO: Implement the main execution loop for fetching and decoding opcodes.
     }
 }

@@ -1,28 +1,25 @@
-export class NESDSK {
-    constructor() {
-        this.prgRom = null;
-        this.chrRom = null;
-        this.mapper = 0;
+export default class NESDSK {
+    constructor(nesEmu) {
+        this.nesEmu = nesEmu;
+        console.log("NESDSK initialized.");
     }
 
     /**
-     * Loads a ROM file and parses its contents.
-     * @param {Uint8Array} romData The binary data of the ROM.
-     * @returns {boolean} True if the ROM was loaded successfully.
+     * Handles the power-on sequence and initiates ROM loading.
+     * @param {File} file The selected ROM file.
      */
-    loadRom(romData) {
-        // TODO: Implement iNES header parsing.
-        console.log("NESDSK is loading a ROM.");
-        
-        // Placeholder check for a valid NES header
-        if (romData[0] === 0x4E && romData[1] === 0x45 && romData[2] === 0x53 && romData[3] === 0x1A) {
-            console.log("Valid NES ROM header found!");
-            return true;
-        }
-
-        console.error("Invalid NES ROM header.");
-        return false;
+    powerOn(file) {
+        console.log("NESDSK is powering on.");
+        // Call the internal method to load the ROM
+        this.loadRom(file);
     }
 
-    // TODO: Implement mapper logic here
+    /**
+     * Handles the ROM file loading.
+     * @param {File} file The selected ROM file.
+     */
+    loadRom(file) {
+        // TODO: Implement the logic to read the file and parse the iNES header.
+        console.log("NESDSK is loading the ROM file.");
+    }
 }

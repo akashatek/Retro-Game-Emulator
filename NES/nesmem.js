@@ -1,31 +1,29 @@
-export class NESMEM {
-    /**
-     * Represents a block of memory for the NES.
-     * @param {number} length The size of the memory bank in bytes.
-     * @param {number} offset The starting memory address of this bank.
-     */
-    constructor(length, offset = 0) {
-        this.ram = new Uint8Array(length);
-        this.offset = offset;
+export default class NESMEM {
+    constructor() {
+        // The NES has a 64KB address space (0x0000 to 0xFFFF)
+        this.memory = new Uint8Array(0x10000); 
+        console.log("NESMEM initialized.");
     }
 
     /**
-     * Reads a byte from the specified address.
-     * @param {number} address The memory address to read from.
+     * Reads a single byte from the specified 16-bit address.
+     * @param {number} address The 16-bit address to read from.
      * @returns {number} The 8-bit value at the address.
      */
     read(address) {
-        // We must apply the offset to get the correct index in our local array.
-        return this.ram[address - this.offset];
+        // For now, this is a direct read from the memory array.
+        // In a more complete emulator, this method would handle memory mapping.
+        return this.memory[address];
     }
 
     /**
-     * Writes a byte to the specified address.
-     * @param {number} address The memory address to write to.
+     * Writes a single byte to the specified 16-bit address.
+     * @param {number} address The 16-bit address to write to.
      * @param {number} value The 8-bit value to write.
      */
     write(address, value) {
-        // We must apply the offset to get the correct index in our local array.
-        this.ram[address - this.offset] = value;
+        // For now, this is a direct write to the memory array.
+        // In a more complete emulator, this method would handle memory mapping.
+        this.memory[address] = value;
     }
 }

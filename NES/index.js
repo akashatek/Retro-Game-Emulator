@@ -1,38 +1,40 @@
-import { NESEMU } from './nesemu.js';
+import NESEMU from './nesemu.js';
 
-const canvas = document.getElementById('screen');
-const ctx = canvas.getContext('2d');
-const romInput = document.getElementById('rom-input');
-const statusElement = document.getElementById('status');
+window.onload = () => {
+    // Get UI elements
+    const powerButton = document.getElementById('power-button');
+    const resetButton = document.getElementById('reset-button');
+    const romFileSelector = document.getElementById('rom-input'); // Corrected ID
 
-const nesEmu = new NESEMU();
+    let selectedFile = null;
+    const nesEmu = new NESEMU();
 
-function setStatus(message, isError = false) {
-    statusElement.textContent = message;
-    statusElement.style.color = isError ? '#ff6b6b' : '#a0a0a0';
-}
-
-romInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setStatus(`Loading "${file.name}"...`);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const romData = new Uint8Array(event.target.result);
-        if (nesEmu.loadRom(romData)) {
-            setStatus(`ROM "${file.name}" loaded successfully.`);
-            // TODO: Start emulation loop after successful load
+    // Event Listeners
+    powerButton.addEventListener('click', (e) => {
+        // Only allow powering on if a file has been selected
+        if (selectedFile) {
+            const isPoweredOn = e.target.classList.toggle('w3-green');
+            e.target.classList.toggle('w3-red');
+            nesEmu.power(isPoweredOn, selectedFile);
         } else {
-            setStatus('Invalid NES ROM or unsupported mapper.', true);
+            console.log("Please select a ROM file first.");
         }
-    };
-    reader.onerror = () => setStatus('Error loading file.', true);
-    reader.readAsArrayBuffer(file);
-});
+    });
 
-// Initial canvas setup
-ctx.imageSmoothingEnabled = false;
-ctx.fillStyle = '#1a1a1a';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-setStatus('Ready to load an NES ROM.');
+    resetButton.addEventListener('click', (e) => {
+        nesEmu.reset();
+        e.target.classList.add('w3-green');
+        e.target.classList.remove('w3-red');
+        setTimeout(() => {
+            e.target.classList.remove('w3-green');
+            e.target.classList.add('w3-red');
+        }, 100);
+    });
+
+    romFileSelector.addEventListener('change', (e) => {
+        selectedFile = e.target.files[0];
+        console.log(`ROM file selected: ${selectedFile.name}`);
+    });
+
+    console.log("NES Emulator UI loaded.");
+};
