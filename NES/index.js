@@ -5,9 +5,10 @@ window.onload = () => {
     const powerButton = document.getElementById('power-button');
     const resetButton = document.getElementById('reset-button');
     const romFile = document.getElementById('rom-input');
+    const display = document.getElementById('screen');
 
     let selectedFile = null;
-    const nesEmu = new NESEMU();
+    const nesEmu = new NESEMU(display);
 
     // Event Listeners
     powerButton.addEventListener('click', (e) => {
@@ -15,24 +16,25 @@ window.onload = () => {
         if (selectedFile) {
             const isPoweredOn = e.target.classList.toggle('w3-green');
             e.target.classList.toggle('w3-red');
-
-            if (isPoweredOn) {
-                nesEmu.powerOn(selectedFile);
-            } else {
-                nesEmu.powerOff();
-            }
+            nesEmu.powerOn(selectedFile);
         } else {
             console.log("Please select a ROM file first.");
         }
     });
 
     resetButton.addEventListener('click', (e) => {
+        // Change the button color to red immediately
+        e.target.classList.remove('w3-green');
+        e.target.classList.add('w3-red');
+        
+        // Perform the reset
         nesEmu.reset();
-        e.target.classList.add('w3-green');
-        e.target.classList.remove('w3-red');
+        console.log("Reset button clicked. Emulator state reset.");
+
+        // After a short delay, change the color back to green
         setTimeout(() => {
-            e.target.classList.remove('w3-green');
-            e.target.classList.add('w3-red');
+            e.target.classList.remove('w3-red');
+            e.target.classList.add('w3-green');
         }, 100);
     });
 

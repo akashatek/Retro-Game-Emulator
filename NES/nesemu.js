@@ -1,4 +1,3 @@
-import NESMEM from './nesmem.js';
 import NESBUS from './nesbus.js';
 import NESCPU from './nescpu.js';
 import NESPPU from './nesppu.js';
@@ -8,11 +7,10 @@ export default class NESEMU {
     constructor(display) {
         // NES Components
         this.nesDsk = new NESDSK(this);
-        this.nesMem = new NESMEM();
         this.nesCpu = new NESCPU(this.nesBus);
-        this.nesPpu = new NESPPU(this.nesBus, display);
+        this.nesPpu = new NESPPU(this.nesBus, this.nesDsk, display);
         // NESBUS needs to be initialized last so it can have access to the CPU and PPU.
-        this.nesBus = new NESBUS(this.nesMem, this.nesCpu, this.nesPpu);
+        this.nesBus = new NESBUS(this.nesCpu, this.nesPpu);
         // Correct the dependencies for nesCpu and nesPpu after nesBus is created
         this.nesCpu.nesBus = this.nesBus;
         this.nesPpu.nesBus = this.nesBus;
@@ -27,23 +25,35 @@ export default class NESEMU {
         console.log("NESEMU initialized.");
     }
 
+    /**
+     * Powers on the emulator.
+     * @param {File} file The ROM file to load.
+     */
     powerOn(file) {
         console.log("NESEMU is powering on");
         this.nesDsk.powerOn(file);
+        this.nesBus.powerOn();
         this._isRunning = true;
         this._lastFrameTime = performance.now();
         // Start the game loop
         this.update(this._lastFrameTime);
     }
 
+    /**
+     * Powers off the emulator.
+     */
     powerOff() {
         console.log("NESEMU is powering off");
         this._isRunning = false;
     }
 
+    /**
+     * Resets the emulator.
+     */
     reset() {
         console.log("NESEMU is resetting.");
-        // TODO: Implement reset logic
+        this.nesBus.reset();
+        // We don't need to restart the game loop, as it's a continuous process
     }
 
     /**

@@ -2,8 +2,11 @@
 // It handles memory reads and writes, directing them to the appropriate hardware.
 
 export default class NESBUS {
-    constructor(nesMem, nesCpu, nesPpu) {
-        this.nesMem = nesMem;
+    constructor(nesCpu, nesPpu) {
+        // The NES has 2KB of internal RAM, which is mirrored.
+        this.ram = new Uint8Array(0x0800); 
+
+        // The bus needs access to the CPU and PPU to orchestrate their cycles.
         this.nesCpu = nesCpu;
         this.nesPpu = nesPpu;
         console.log("NESBUS initialized.");
@@ -15,9 +18,14 @@ export default class NESBUS {
      * @returns {number} The 8-bit value at the address.
      */
     cpuRead(address) {
-        // For now, simply read directly from memory.
-        // TODO: Implement logic to route reads to PPU registers, APU, and controller inputs.
-        return this.nesMem.read(address);
+        // Map CPU addresses to the correct hardware component.
+        if (address >= 0x0000 && address <= 0x1FFF) {
+            // RAM and its mirrors ($0000-$1FFF)
+            return this.ram[address & 0x07FF];
+        }
+        
+        // For now, return a placeholder value for unimplemented address ranges.
+        return 0;
     }
 
     /**
@@ -26,9 +34,11 @@ export default class NESBUS {
      * @param {number} value The 8-bit value to write.
      */
     cpuWrite(address, value) {
-        // For now, simply write directly to memory.
-        // TODO: Implement logic to route writes to PPU registers, APU, and controller inputs.
-        this.nesMem.write(address, value);
+        // Map CPU addresses to the correct hardware component.
+        if (address >= 0x0000 && address <= 0x1FFF) {
+            // RAM and its mirrors ($0000-$1FFF)
+            this.ram[address & 0x07FF] = value;
+        }
     }
 
     /**
@@ -40,5 +50,25 @@ export default class NESBUS {
         this.nesPpu.tick();
         this.nesPpu.tick();
         this.nesCpu.tick();
+    }
+    
+    /**
+     * Powers on the CPU and PPU and initializes the RAM to a default state.
+     */
+    powerOn() {
+        this.nesCpu.powerOn();
+        this.nesPpu.powerOn();
+        // Clear all internal RAM to 0 on power up.
+        this.ram.fill(0);
+    }
+
+    /**
+     * Resets the CPU and PPU.
+     */
+    reset() {
+        this.nesCpu.reset();
+        this.nesPpu.reset();
+        // Clear all internal RAM to 0 on reset.
+        this.ram.fill(0);
     }
 }

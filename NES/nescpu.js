@@ -36,11 +36,26 @@ export default class NESCPU {
     }
 
     /**
+     * Powers on the CPU, resetting all registers.
+     */
+    powerOn() {
+        console.log("NESCPU powering on.");
+        this.reset();
+    }
+
+    /**
      * Resets the CPU to its initial state.
      */
     reset() {
         console.log("NESCPU is resetting.");
-        // TODO: Implement reset logic, including setting initial register values and flags.
+        this.A = this.X = this.Y = 0;
+        this.SP = 0xFD;
+        this.status.I = true;
+        
+        // Read the reset vector from memory addresses $FFFC and $FFFD
+        const lowByte = this.nesBus.cpuRead(0xFFFC);
+        const highByte = this.nesBus.cpuRead(0xFFFD);
+        this.PC = (highByte << 8) | lowByte;
     }
 
     /**
