@@ -58,17 +58,8 @@ export default class NESBUS {
     powerOn() {
         this.nesCpu.powerOn();
         this.nesPpu.powerOn();
-        // Clear all internal RAM to 0 on power up.
+        // Clear all internal RAM to 0 on power on.
         this.ram.fill(0);
-    }
-
-    /**
-     * Resets the CPU and PPU.
-     */
-    reset() {
-        this.nesCpu.reset();
-        this.nesPpu.reset();
-        // Clear all internal RAM to 0 on reset.
-        this.ram.fill(0);
+        console.log("NESBUS has powered on the system.");
     }
 }

@@ -1,4 +1,3 @@
-import NESMEM from './nesmem.js';
 import NESBUS from './nesbus.js';
 import NESDSK from './nesdsk.js';
 import NESCPU from './nescpu.js';
@@ -34,14 +33,15 @@ export default class NESPPU {
      * @returns {number} The 8-bit value at the address.
      */
     ppuRead(address) {
-        // Wrap address to 14-bit VRAM space
+        // Wrap address to 0x3FFF (14-bit address space)
         address &= 0x3FFF;
 
         if (address >= 0x0000 && address <= 0x1FFF) {
-            // Pattern Tables 0 and 1
+            // Pattern tables are typically read-only from the cartridge.
+            // For now, we only support Mapper 0.
             return this.nesDsk.chrRom[address];
         } else if (address >= 0x2000 && address <= 0x3EFF) {
-            // Nametables and their mirrors
+            // Nametables and their mirrors.
             return this.vram[address & 0x07FF];
         } else if (address >= 0x3F00 && address <= 0x3F1F) {
             // Palette RAM and its mirrors
@@ -95,15 +95,16 @@ export default class NESPPU {
      */
     reset() {
         console.log("NESPPU is resetting.");
-        this.CTRL = this.MASK = this.OAMADDR = this.SCROLL = this.ADDR = this.DATA = 0;
+        this.CTRL = this.MASK = this.STATUS = this.OAMADDR = this.OAMDATA = this.SCROLL = this.ADDR = this.DATA = 0;
         this.vram.fill(0);
         this.palettes.fill(0);
+        // TODO: Reset other PPU-specific state.
     }
 
     /**
      * Simulates one PPU clock tick.
      */
     tick() {
-        // PPU clock logic goes here.
+        // TODO: Implement PPU tick logic.
     }
 }

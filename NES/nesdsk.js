@@ -37,62 +37,44 @@ export default class NESDSK {
 
             // Check the iNES header (bytes 0-3)
             if (data[0] !== 0x4E || data[1] !== 0x45 || data[2] !== 0x53 || data[3] !== 0x1A) {
-                throw new Error("Invalid NES ROM file header.");
+                console.error("Invalid iNES header. This is not a valid NES ROM.");
+                return;
             }
 
-            // Get PRG-ROM and CHR-ROM size from header
-            this.prgRomCount = data[4];
-            this.chrRomCount = data[5];
+            // Get ROM sizes from the header
+            this.prgRomCount = data[4]; // 16KB PRG-ROM banks
+            this.chrRomCount = data[5]; // 8KB CHR-ROM banks
+            this.mapper = ((data[7] & 0xF0) | (data[6] >> 4));
 
-            // Get mapper number from header
-            this.mapper = ((data[7] >> 4) << 4) | (data[6] >> 4);
-
-            if (this.mapper !== 0) {
-                throw new Error(`Mapper ${this.mapper} is not supported. This emulator only supports Mapper 0.`);
-            }
-
+            console.log(`PRG-ROM banks: ${this.prgRomCount}`);
+            console.log(`CHR-ROM banks: ${this.chrRomCount}`);
             console.log(`Mapper: ${this.mapper}`);
-            console.log(`PRG-ROM: ${this.prgRomCount} banks`);
-            console.log(`CHR-ROM: ${this.chrRomCount} banks`);
 
-            // Extract PRG-ROM and CHR-ROM from the file
-            const prgRomStart = 16;
-            const chrRomStart = prgRomStart + (this.prgRomCount * 16384);
-
-            this.prgRom = data.slice(prgRomStart, chrRomStart);
-            this.chrRom = data.slice(chrRomStart, chrRomStart + (this.chrRomCount * 8192));
-
-            this.updateUI();
-            this.drawPatternTables();
-
-        } catch (error) {
-            console.error(`ROM loading error: ${error.message}`);
-        }
-    }
-
-    /**
-     * Updates the UI with information from the loaded ROM.
-     */
-    updateUI() {
-        if (this.mapperNumberSpan) {
+            // Update UI
             this.mapperNumberSpan.textContent = this.mapper;
-        }
-        if (this.prgRomCountSpan) {
             this.prgRomCountSpan.textContent = this.prgRomCount;
-        }
-        if (this.prgRomSizeSpan) {
-            this.prgRomSizeSpan.textContent = this.prgRomCount * 16 + "KB";
-        }
-        if (this.chrRomCountSpan) {
+            this.prgRomSizeSpan.textContent = `${this.prgRomCount * 16} KB`;
             this.chrRomCountSpan.textContent = this.chrRomCount;
-        }
-        if (this.chrRomSizeSpan) {
-            this.chrRomSizeSpan.textContent = this.chrRomCount * 8 + "KB";
+            this.chrRomSizeSpan.textContent = `${this.chrRomCount * 8} KB`;
+
+            // Extract PRG-ROM and CHR-ROM from the file data
+            const prgRomSize = this.prgRomCount * 16 * 1024;
+            const chrRomSize = this.chrRomCount * 8 * 1024;
+
+            const prgRomStart = 16;
+            const chrRomStart = prgRomStart + prgRomSize;
+
+            this.prgRom = data.subarray(prgRomStart, prgRomStart + prgRomSize);
+            this.chrRom = data.subarray(chrRomStart, chrRomStart + chrRomSize);
+            
+            this.drawPatternTables();
+        } catch (error) {
+            console.error("Failed to load or parse the ROM file:", error);
         }
     }
 
     /**
-     * Draws the CHR-ROM pattern tables onto their respective canvases.
+     * Draws the PPU pattern tables from the CHR-ROM data to the canvases.
      */
     drawPatternTables() {
         if (this.chrRom.length > 0) {
@@ -122,7 +104,7 @@ export default class NESDSK {
                     const plane1 = this.chrRom[tileOffset + y + 8];
 
                     for (let x = 0; x < 8; x++) {
-                        const pixel = ((plane0 >> (7 - x)) & 1) | (((plane1 >> (7 - x)) & 1) << 1);
+                        const pixel = (((plane1 >> (7 - x)) & 1) << 1) | ((plane0 >> (7 - x)) & 1);
                         ctx.fillStyle = palette[pixel];
                         ctx.fillRect((tileX * 8) + x, (tileY * 8) + y, 1, 1);
                     }
