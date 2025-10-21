@@ -28,50 +28,89 @@ export class NESEMU {
         this.ppu = new NESPPU(this);
         this.apu = new NESAPU(this);
 
+        this.isRunning = false;
+
         console.log("NESEMU: initialised.");
+    }
+
+    start() {
+         if (this.isRunning) {
+            console.warn("Emulator is already running.");
+            return;
+        }
+        this.isRunning = true;
+        
+        console.log("SMSEMU: Emulation started.");
+        // Use requestAnimationFrame for a stable, browser-friendly loop
+        requestAnimationFrame(this.update.bind(this));
+    }
+
+    stop() {
+        this.isRunning = false;
+        console.log("SMSEMU: Emulation stopped.");
+    }
+
+    update(currentTime) {
+        if (!this.isRunning) {
+            return;
+        }
+
+        this.cpu.update(currentTime);
+       
+        // Request the next frame
+        requestAnimationFrame(this.update.bind(this));
+    }
+
+    getMemoryMapping(addr) {
+        if (addr >= 0x0000 && addr <= 0x1FFF) {
+            // 2KB Internal RAM
+            return { "mem": this.wram, "addr": addr % 0x0800 };
+        } else if (addr >= 0x2000 && addr <= 0x3FFF) {
+            // NES PPU registers
+            return { "mem": this.ppu.reg, "addr": (addr - 0x2000) % 0x0008 };
+        } else if (addr >= 0x4000 && addr <= 0x4013) {
+            // NES APU registers
+            return { "mem": this.apu.reg, "addr": (addr - 0x4000) % 0x0018 };
+        } else if (addr >= 0x8000 && addr <= 0xBFFF) {
+            // NES DSK PRGROMs active Index 0
+            return { "mem": this.dsk.prgRoms[this.dsk.active[0]], "addr": (addr - 0x8000) % 0x4000 };
+        } else if (addr >= 0xC000 && addr <= 0xFFFF) {
+            // NES DSK PRGROMs active Index 1
+            return { "mem": this.dsk.prgRoms[this.dsk.active[1]], "addr": (addr - 0xC000) % 0x4000 };
+        }
+        return null;
     }
 
     readByte(addr) {
          // TBD: NES I/O Registers
 
-        if (addr >= 0x0000 && addr <= 0x1FFF) {
-            // 2KB Internal RAM
-            return this.wram.readByte(addr);
-        } else if (addr >= 0x2000 && addr <= 0x3FFF) {
-            // NES PPU registers
-            return this.ppu.reg.readByte(addr - 0x2000);
-        } else if (addr >= 0x4000 && addr <= 0x4013) {
-            // NES APU registers
-            return this.apu.reg.readByte(addr - 0x4000);
-        } else if (addr >= 0x8000 && addr <= 0xBFFF) {
-            // NES DSK PRGROMs Index 0
-            return this.dsk.prgRoms[0].readByte(addr - 0x8000);
-        } else if (addr >= 0xC000 && addr <= 0xFFFF) {
-            // NES DSK PRGROMs Index 1
-            return this.dsk.prgRoms[1].readByte(addr - 0xC000);
+        const map = this.getMemoryMapping(addr);
+        if (map != null) {
+            return map.mem.readByte(map.addr);
         }
+        
         return 0x00;
     }
 
     writeByte(addr, value) {
         // TBD: NES I/O Registers
 
-        if (addr >= 0x0000 && addr <= 0x1FFF) {
-            // 2KB Internal RAM
-            this.wram.writeByte(addr, value);
-        } else if (addr >= 0x2000 && addr <= 0x3FFF) {
-            // NES PPU registers
-            this.ppu.reg.writeByte(addr - 0x2000, value);
-        } else if (addr >= 0x4000 && addr <= 0x4013) {
-            // NES APU registers
-            this.apu.reg.writeByte(addr - 0x4000, value);
-        } else if (addr >= 0x8000 && addr <= 0xBFFF) {
-            // NES DSK PRGROMs Index 0
-            this.dsk.prgRoms[0].writeByte(addr - 0x8000, value);
-        } else if (addr >= 0xC000 && addr <= 0xFFFF) {
-            // NES DSK PRGROMs Index 1
-            this.dsk.prgRoms[1].writeByte(addr - 0xC000, value);
+        const map = this.getMemoryMapping(addr);
+        if (map != null) {
+            map.mem.writeByte(map.addr, value);
+        }
+    }
+
+    readWordLittleEndian(addr) {
+         // This delegates the Little-Endian read to the correct component.
+         // Since the Reset Vector is at FFFC/FFFD, it will land in the PRG-ROM (this.dsk.prgRoms[1]).
+
+        const map = this.getMemoryMapping(addr);
+        console.log(map);
+        if (map != null) {
+            return map.mem.readWordLittleEndian(map.addr);
         }
         
+        return 0x0000;
     }
 }

@@ -8,11 +8,29 @@ export class NESMEM {
     }
 
     readByte(addr) {
-        return this.datas[addr & size];
+        return this.datas[addr];
     }
 
     writeByte(addr, value) {
-        this.datas[addr & size] = value;
+        this.datas[addr] = value;
+    }
+
+    // New Function: Read a 16-bit word in Little-Endian format
+    // $addr contains the Low byte, $addr + 1 contains the High byte
+    readWordLittleEndian(addr) {
+        let lo = this.datas[addr];
+        let hi = this.datas[addr + 1];
+        // Combine (hi << 8) | lo
+        return (hi << 8) | lo;
+    }
+
+    // New Function: Read a 16-bit word in Big-Endian format
+    // $addr contains the High byte, $addr + 1 contains the Low byte
+    readWordBigEndian(addr) {
+        let hi = this.datas[addr];
+        let lo = this.datas[addr+1];
+        // Combine (hi << 8) | lo
+        return (hi << 8) | lo;
     }
     
     reset(bytes) {

@@ -11,13 +11,17 @@ export class NESDSK {
         this.chrRomCount = 0;
         this.chrRomSizeKB = 8;
         this.mirroring = "vertical";
+        this.active = [0, 1];
     }
 
     dump() {
-        let str = `NESDSK: mapper: ${this.mapper}, mirroring: ${this.mirroring}\n`;
+        let str = `NESDSK: \n\tmapper: ${this.mapper}\n\tmirroring: ${this.mirroring}\n`;
         str += `\tPRGROM: ${this.prgRomCount} * ${this.prgRomSizeKB} KB.\n`;
         str += `\tCHRROM: ${this.chrRomCount} * ${this.chrRomSizeKB} KB.\n`;
         console.log(str);
+        this.prgRoms.forEach(prgRom => {
+            prgRom.hexdump();
+        })
     }
 
     // TBD: trainer, PRG RAM, TV system (PAL / NTSC) not taken into account
