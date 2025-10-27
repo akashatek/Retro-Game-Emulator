@@ -33,7 +33,7 @@ export class NESEMU {
         console.log("NESEMU: initialised.");
     }
 
-    start() {
+    powerOn() {
          if (this.isRunning) {
             console.warn("Emulator is already running.");
             return;
@@ -45,7 +45,7 @@ export class NESEMU {
         requestAnimationFrame(this.update.bind(this));
     }
 
-    stop() {
+    powerOff() {
         this.isRunning = false;
         console.log("SMSEMU: Emulation stopped.");
     }
@@ -59,6 +59,10 @@ export class NESEMU {
        
         // Request the next frame
         requestAnimationFrame(this.update.bind(this));
+    }
+
+    clock() {
+        this.cpu.clock();
     }
 
     getMemoryMapping(addr) {
@@ -101,14 +105,13 @@ export class NESEMU {
         }
     }
 
-    readWordLittleEndian(addr) {
+    readWord(addr) {
          // This delegates the Little-Endian read to the correct component.
          // Since the Reset Vector is at FFFC/FFFD, it will land in the PRG-ROM (this.dsk.prgRoms[1]).
 
         const map = this.getMemoryMapping(addr);
-        console.log(map);
         if (map != null) {
-            return map.mem.readWordLittleEndian(map.addr);
+            return map.mem.readWord(map.addr);
         }
         
         return 0x0000;
