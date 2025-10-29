@@ -33,16 +33,22 @@ export class NESEMU {
         console.log("NESEMU: initialised.");
     }
 
-    powerOn() {
+    async powerOn() {
          if (this.isRunning) {
             console.warn("Emulator is already running.");
             return;
         }
         this.isRunning = true;
         
+        await this.dsk.powerOn();
+        await this.cpu.powerOn();
+        await this.ppu.powerOn();
+        
+
         console.log("SMSEMU: Emulation started.");
+
         // Use requestAnimationFrame for a stable, browser-friendly loop
-        requestAnimationFrame(this.update.bind(this));
+        // requestAnimationFrame(this.update.bind(this));
     }
 
     powerOff() {

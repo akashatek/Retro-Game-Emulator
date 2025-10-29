@@ -67,7 +67,22 @@ export class NESCPU {
         this.opcode = {};               // Current instruction opcode
     }
 
-    reset() {        
+    async powerOn() { 
+        // Read the Reset Vector from the PRG-ROM at addresses $FFFC (Little-Endian)
+        // This is delegated to the NESEMU, which forwards the request to the correct PRG-ROM bank.
+        this.PC = this.emu.readWord(0xFFFC);
+        this.A = 0x00;
+        this.X = 0x00;
+        this.Y = 0x00;
+        this.S = 0xFD;                  // Stack Pointer starts at $01FD
+        this.P = 0b00100100;            // NV1BDIZC = 0b00100100
+
+        this.opcode = {};
+
+        console.log(`NESCPU: Reset Vector read. PC set to $${hexWord(this.PC)}`);
+    }
+
+    async reset() {        
         // Read the Reset Vector from the PRG-ROM at addresses $FFFC (Little-Endian)
         // This is delegated to the NESEMU, which forwards the request to the correct PRG-ROM bank.
         this.PC = this.emu.readWord(0xFFFC);

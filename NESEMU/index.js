@@ -10,6 +10,10 @@ document.getElementById("game-canvas").addEventListener("click", () => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await emu.dsk.load("../Assets/NES/Boulder Dash (Europe).nes");
-    emu.cpu.reset();
+    emu.dsk.url = "../Assets/NES/Boulder Dash (Europe).nes";
+    await emu.powerOn();
+
+    const tile2bppData = emu.ppu.patternTable2bppBitmapTileId(0, 0);
+    const tile = emu.ppu.bitmap2bppTileImage(tile2bppData);
+    // emu.context.drawImage(tile, 100, 100);
 });

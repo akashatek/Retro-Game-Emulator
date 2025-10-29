@@ -3,6 +3,7 @@ import { NESMEM } from "./NESMEM.js";
 export class NESDSK {
     constructor(emu) {
         this.emu = emu;
+        this.url = "";
         this.mapper = 0;
         this.prgRoms = [];
         this.prgRomCount = 0;
@@ -25,9 +26,9 @@ export class NESDSK {
     }
 
     // TBD: trainer, PRG RAM, TV system (PAL / NTSC) not taken into account
-    async load(url) {
+    async powerOn() {
         const mem = new NESMEM();
-        await mem.load(url);
+        await mem.load(this.url);
 
         if (mem.compare(0x0000, 4, [0x4E, 0x45, 0x53, 0x1A]) == false) {
             console.log("NESDSK: not a valid NES ROM header");
